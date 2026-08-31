@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Best Deals 254</title>
+<style>
+:root{--blue:#071a45;--gold:#ffd21a;--dark:#050b19;--white:#fff;--muted:#9ca8bd;--card:#101d35}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#050b19;color:white}
+.app{max-width:430px;margin:auto;min-height:100vh;background:linear-gradient(180deg,#071a45,#071022)}
+header{padding:18px 18px 12px;position:sticky;top:0;background:#071a45ee;backdrop-filter:blur(8px);z-index:5}
+.brand{display:flex;align-items:center;gap:10px}.brand img{width:55px;height:55px;object-fit:cover;border-radius:12px}.brand h1{font-size:20px;margin:0}.brand small{color:#ffd21a}
+.search{margin-top:14px;background:white;border-radius:13px;padding:12px;color:#657086}.search input{border:0;outline:0;width:90%;font-size:15px}
+.content{padding:16px}.hero{background:linear-gradient(135deg,#0c3b91,#0a1735);border:1px solid #1d4fa8;border-radius:18px;padding:20px;margin-bottom:18px}
+.hero h2{font-size:28px;margin:0 0 8px}.hero p{color:#d9e2f5;margin:0 0 15px}.btn{border:0;border-radius:12px;padding:12px 16px;background:#ffd21a;color:#101010;font-weight:bold;cursor:pointer}
+h3{margin:18px 0 10px}.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.cat{background:var(--card);border-radius:13px;padding:12px 5px;text-align:center;font-size:12px;border:1px solid #1b2b4c}.cat b{display:block;font-size:22px;margin-bottom:5px}
+.products{display:grid;grid-template-columns:1fr 1fr;gap:12px}.product{background:#fff;color:#101522;border-radius:15px;overflow:hidden}.product .pic{height:115px;background:#dce7f7;display:flex;align-items:center;justify-content:center;font-size:50px}.product .info{padding:11px}.product h4{margin:0 0 6px;font-size:14px}.price{color:#e51f2a;font-weight:bold}.add{width:100%;margin-top:8px;background:#0c4fca;color:white;border:0;border-radius:9px;padding:9px;font-weight:bold}
+nav{position:sticky;bottom:0;background:#071a45;border-top:1px solid #1c3158;display:grid;grid-template-columns:repeat(4,1fr);padding:9px 4px;z-index:6}nav button{background:none;border:0;color:#aab6cc;font-size:11px}nav button.active{color:#ffd21a;font-weight:bold}nav span{display:block;font-size:19px;margin-bottom:3px}
+.page{display:none}.page.active{display:block}.empty{text-align:center;padding:60px 20px;color:#b9c4d7}.order{background:white;color:#121827;padding:14px;border-radius:14px;margin-bottom:10px}.whatsapp{display:block;text-align:center;background:#1bb65c;color:#fff;padding:12px;border-radius:11px;text-decoration:none;font-weight:bold;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand">
+   <img src="best-deals-branding.png" alt="Best Deals 254 branding">
+   <div><h1>BEST DEALS <span style="color:#ffd21a">254</span></h1><small>TECH YOU CAN TRUST</small></div>
+ </div>
+ <div class="search">🔎 <input id="search" placeholder="Search laptops, desktops, monitors..." oninput="filterProducts()"></div>
+</header>
+
+<main class="content">
+<section id="home" class="page active">
+ <div class="hero"><h2>Shop Smart. Shop Best Deals.</h2><p>Quality tech at great prices — laptops, desktops, monitors, accessories & more.</p><button class="btn" onclick="showPage('shop')">SHOP NOW →</button></div>
+ <h3>Categories</h3>
+ <div class="cats">
+  <div class="cat" onclick="showPage('shop')"><b>💻</b>Laptops</div>
+  <div class="cat" onclick="showPage('shop')"><b>🖥️</b>Desktops</div>
+  <div class="cat" onclick="showPage('shop')"><b>📺</b>Monitors</div>
+  <div class="cat" onclick="showPage('shop')"><b>⚙️</b>CPUs</div>
+  <div class="cat" onclick="showPage('shop')"><b>🎧</b>Accessories</div>
+  <div class="cat" onclick="showPage('shop')"><b>📹</b>CCTV</div>
+  <div class="cat" onclick="showPage('shop')"><b>🌐</b>Networking</div>
+  <div class="cat" onclick="showPage('shop')"><b>📱</b>Phones</div>
+ </div>
+ <h3>🔥 Hot Deals</h3>
+ <div class="products" id="homeProducts"></div>
+</section>
+
+<section id="shop" class="page"><h2>Shop</h2><div class="products" id="shopProducts"></div></section>
+<section id="cart" class="page"><h2>My Cart</h2><div id="cartList"></div><div id="cartTotal"></div></section>
+<section id="account" class="page"><h2>My Account</h2>
+ <div class="order"><b>📦 My Orders</b><p>Track your purchases and delivery status.</p></div>
+ <div class="order"><b>❤️ Saved Items</b><p>Your favourite products will appear here.</p></div>
+ <div class="order"><b>📞 Contact Best Deals 254</b><p>0793 325 914<br>0700 817 521<br>0731 743 595</p>
+ <a class="whatsapp" href="https://wa.me/254793325914">Chat on WhatsApp</a></div>
+</section>
+</main>
+
+<nav>
+ <button id="n-home" class="active" onclick="showPage('home')"><span>⌂</span>Home</button>
+ <button id="n-shop" onclick="showPage('shop')"><span>🛍</span>Shop</button>
+ <button id="n-cart" onclick="showPage('cart')"><span>🛒</span>Cart <i id="count"></i></button>
+ <button id="n-account" onclick="showPage('account')"><span>👤</span>Account</button>
+</nav>
+</div>
+
+<script>
+const products=[
+ {name:"HP / Dell / Core 2 Duo Desktop",price:5000,icon:"🖥️",spec:"2GB RAM • 160GB HDD",stock:"Available"},
+ {name:"HP Core i5 2nd Gen Desktop",price:10000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"20 pieces"},
+ {name:"Dell Core i5 2nd Gen Desktop",price:10000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"10 pieces"},
+ {name:"Acer Core i5 4th Gen Desktop",price:13000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"1 piece"},
+ {name:"Lenovo Core i5 4th Gen Desktop",price:12000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"1 piece"},
+ {name:"Dell OptiPlex Core i5 4th Gen",price:13000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"20 pieces"},
+ {name:"HP EliteDesk Core i5 4th Gen",price:12000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"2 pieces"},
+ {name:"Lenovo Core i3 6th Gen Desktop",price:12000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"OUT OF STOCK"},
+ {name:"Lenovo Core i5 6th Gen Desktop",price:14000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"OUT OF STOCK"},
+ {name:"HP EliteDesk Core i5 6th Gen",price:16000,icon:"🖥️",spec:"8GB RAM • 500GB HDD",stock:"OUT OF STOCK"},
+ {name:"HP 280 G2 Core i3 6th Gen",price:12000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"4 pieces"},
+ {name:"Dell Vostro Core i3 8th Gen",price:15000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"2 pieces"},
+ {name:"HP Z400 Workstation",price:18000,icon:"🖥️",spec:"4GB RAM • 500GB HDD • 1GB Graphics",stock:"2 pieces"},
+ {name:"Byte Speed (Asus) Core i3 4th Gen",price:11000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"2 pieces"},
+
+ {name:"Acer 17-inch Monitor",price:3500,icon:"📺",spec:"17-inch display",stock:"10 pieces"},
+ {name:"HP 17-inch Monitor",price:3500,icon:"📺",spec:"17-inch display",stock:"3 pieces"},
+ {name:"Dell 19-inch Monitor",price:3500,icon:"📺",spec:"19-inch display",stock:"Available"},
+ {name:"Asus 20-inch Monitor",price:3500,icon:"📺",spec:"20-inch display",stock:"Available"},
+ {name:"ViewSonic 22-inch Monitor",price:5000,icon:"📺",spec:"22-inch • HDMI",stock:"10 pieces"},
+ {name:"Lenovo 22-inch Monitor",price:5500,icon:"📺",spec:"22-inch • DisplayPort",stock:"Available"},
+ {name:"Dell 22-inch Monitor",price:5500,icon:"📺",spec:"22-inch • DisplayPort",stock:"4 pieces"},
+ {name:"HP 24-inch Monitor",price:6000,icon:"📺",spec:"24-inch • HDMI",stock:"30 pieces"},
+ {name:"HP 24-inch Frameless Monitor",price:12000,icon:"📺",spec:"24-inch • Frameless",stock:"7 pieces"},
+ {name:"ViewSonic 24-inch Monitor",price:6000,icon:"📺",spec:"24-inch display",stock:"3 pieces"},
+ {name:"Acer 24-inch Monitor",price:6000,icon:"📺",spec:"24-inch display",stock:"2 pieces"}
+];
+let cart=[];
+function money(n){return "KSh "+n.toLocaleString()}
+function card(p,i){return `<div class="product"><div class="pic">${p.icon}</div><div class="info"><h4>${p.name}</h4><small>${p.spec}</small><div class="price">${money(p.price)}</div><small style="display:block;margin-top:5px;color:${p.stock==="OUT OF STOCK"?"#d71920":"#16834a"};font-weight:bold">${p.stock}</small><button class="add" ${p.stock==="OUT OF STOCK"?"disabled style=\"opacity:.45;cursor:not-allowed\"":""} onclick="add(${i})">${p.stock==="OUT OF STOCK"?"Out of Stock":"Add to Cart"}</button></div></div>`}
+function render(){
+ document.getElementById("homeProducts").innerHTML=products.slice(0,4).map((p,i)=>card(p,i)).join("");
+ document.getElementById("shopProducts").innerHTML=products.map((p,i)=>card(p,i)).join("");
+ updateCart();
+}
+function add(i){cart.push(products[i]);updateCart();alert(products[i].name+" added to cart")}
+function updateCart(){
+ document.getElementById("count").textContent=cart.length?`(${cart.length})`:"";
+ const list=document.getElementById("cartList");
+ if(!cart.length){list.innerHTML='<div class="empty">🛒<h3>Your cart is empty</h3><p>Browse our latest tech deals and add something you like.</p><button class="btn" onclick="showPage(\'shop\')">Browse Products</button></div>';document.getElementById("cartTotal").innerHTML="";return}
+ list.innerHTML=cart.map((p,i)=>`<div class="order"><b>${p.name}</b><br>${p.spec}<br><strong class="price">${money(p.price)}</strong><button style="float:right" onclick="cart.splice(${i},1);updateCart()">Remove</button></div>`).join("");
+ const total=cart.reduce((a,p)=>a+p.price,0);
+ document.getElementById("cartTotal").innerHTML=`<div class="order"><b>Total: ${money(total)}</b><a class="whatsapp" href="https://wa.me/254793325914?text=Hello%20Best%20Deals%20254%2C%20I%20want%20to%20order%20from%20my%20cart.">Order via WhatsApp</a></div>`;
+}
+function showPage(id){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+ document.getElementById("n-"+id).classList.add("active");
+ scrollTo(0,0);
+}
+function filterProducts(){
+ const q=document.getElementById("search").value.toLowerCase();
+ document.getElementById("shopProducts").innerHTML=products.map((p,i)=>({p,i})).filter(x=>(x.p.name+" "+x.p.spec).toLowerCase().includes(q)).map(x=>card(x.p,x.i)).join("")||'<div class="empty">No products found.</div>';
+ showPage("shop");
+}
+render();
+</script>
+</body>
+</html>
