@@ -1,7 +1,30 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Best Deals 254 Admin</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f3f5f8;color:#111}.top{background:#080b12;color:#fff;padding:13px 16px;display:flex;justify-content:space-between;align-items:center}.top img{width:43px;height:43px;border-radius:8px;vertical-align:middle;object-fit:cover}.wrap{max-width:1150px;margin:auto;padding:18px}.box{background:#fff;padding:18px;border-radius:14px;margin-bottom:15px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:16px;background:#fff;border-radius:12px}.stat b{display:block;font-size:25px;margin-top:6px}.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form input,.form select{padding:11px;border:1px solid #ddd;border-radius:8px}.full{grid-column:1/-1}.btn{padding:9px 12px;border:0;border-radius:8px;font-weight:bold;cursor:pointer}.red{background:#e51f2a;color:#fff}.dark{background:#111;color:#fff}.login{max-width:390px;margin:65px auto}.login input{width:100%;padding:11px;margin:5px 0;border:1px solid #ddd;border-radius:8px}.error{color:#c71925}.scroll{overflow:auto}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #eee;text-align:left;font-size:13px}.out{color:#d71920;font-weight:bold}.status{padding:5px;border-radius:8px;border:1px solid #ddd}@media(max-width:700px){.grid{grid-template-columns:1fr 1fr}.form{grid-template-columns:1fr}.full{grid-column:auto}}
 </style></head><body><div class="top"><div><img src="best-deals-logo.png"> <b>BEST DEALS 254 — ADMIN</b></div><button class="btn" onclick="logout()">Sign out</button></div><div class="wrap"><div id="login" class="box login"><h2>Admin Login</h2><input id="email" type="email" placeholder="Admin email"><input id="password" type="password" placeholder="Password"><button class="btn red" style="width:100%;margin-top:6px" onclick="loginNow()">Login</button><p id="err" class="error"></p></div><div id="panel" style="display:none"><div class="grid"><div class="stat">Products<b id="total">0</b></div><div class="stat">In stock<b id="instock">0</b></div><div class="stat">Out of stock<b id="outstock">0</b></div><div class="stat">Orders<b id="ordercount">0</b></div></div><div class="box"><h2>Add Product</h2><div class="form"><input id="name" placeholder="Product name"><select id="cat"><option>Desktops</option><option>Monitors</option><option>Laptops</option><option>Accessories</option><option>CCTV</option><option>Networking</option><option>Storage</option></select><input id="price" type="number" placeholder="Price KSh"><input id="stock" type="number" placeholder="Stock"><input id="specs" class="full" placeholder="Specifications"><button class="btn red full" onclick="addProduct()">Publish Product</button></div></div><div class="box"><h2>Inventory</h2><div class="scroll"><table><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></div><div class="box"><h2>Recent Orders</h2><div class="scroll"><table><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Action</th></tr></thead><tbody id="orders"></tbody></table></div></div></div></div><script>
 const URL='https://txiomgyaxkzurhydzaym.supabase.co';const KEY='sb_publishable_VErhadeVAIpY5CN8KIZfig_hqOpYFvY';const db=supabase.createClient(URL,KEY);const $=id=>document.getElementById(id);
-async function loginNow(){const {error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error){$('err').textContent=error.message;return}await start()}
+async function loginNow(){
+  $('err').textContent='Checking login...';
+
+  try {
+    const email = $('email').value.trim();
+    const password = $('password').value;
+
+    const { data, error } = await db.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+    if (error) {
+      $('err').textContent = error.message;
+      return;
+    }
+
+    $('err').textContent='Login successful. Loading admin...';
+    await start();
+
+  } catch (e) {
+    $('err').textContent = 'Error: ' + e.message;
+  }
+}
 async function start(){const {data:{session}}=await db.auth.getSession();if(!session){$('login').style.display='block';$('panel').style.display='none';return}const {data:p,error}=await db.from('profiles').select('role').eq('id',session.user.id).single();if(error||!p||p.role!=='admin'){await db.auth.signOut();$('err').textContent='This account is not an admin.';return}$('login').style.display='none';$('panel').style.display='block';await load()}
 async function load(){const {data:ps,error}=await db.from('products').select('*').order('created_at',{ascending:false});if(error){alert(error.message);return}const {count}=await db.from('orders').select('*',{count:'exact',head:true});$('total').textContent=ps.length;$('instock').textContent=ps.filter(x=>x.stock>0).length;$('outstock').textContent=ps.filter(x=>x.stock===0).length;$('ordercount').textContent=count||0;$('rows').innerHTML=ps.map(p=>`<tr><td><b>${esc(p.name)}</b><br><small>${esc(p.specs||'')}</small></td><td>${esc(p.category)}</td><td>KSh ${Number(p.price).toLocaleString()}</td><td class="${p.stock===0?'out':''}">${p.stock}</td><td><button class="btn dark" onclick="stock('${p.id}',1)">+</button> <button class="btn" onclick="stock('${p.id}',-1)">−</button> <button class="btn red" onclick="del('${p.id}')">Delete</button></td></tr>`).join('');await loadOrders()}
 async function loadOrders(){const {data,error}=await db.from('orders').select('*').order('created_at',{ascending:false}).limit(50);if(error){$('orders').innerHTML='<tr><td colspan="5">'+error.message+'</td></tr>';return}$('orders').innerHTML=data.map(o=>`<tr><td>${o.id.slice(0,8)}...</td><td>${esc(o.customer_name)}<br>${esc(o.phone)}</td><td>KSh ${Number(o.total).toLocaleString()}</td><td><select class="status" onchange="setStatus('${o.id}',this.value)">${['pending','confirmed','packed','out_for_delivery','completed','cancelled'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}</select></td><td>${esc(o.location||'')}</td></tr>`).join('')||'<tr><td colspan="5">No orders yet.</td></tr>'}
