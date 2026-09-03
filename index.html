@@ -78,7 +78,7 @@ const supabase = window.supabase.createClient(
 </nav>
 </div>
 <script>
-async function testSupabase() {
+
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -92,8 +92,38 @@ async function testSupabase() {
   console.log("Supabase connected successfully:", data);
 }
 
-testSupabase();
+
 </script>
+ async function loadProducts() {
+  const { data, error } = await db
+    .from('products')
+    .select('*')
+    .eq('active', true)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Products error:', error);
+    return;
+  }
+
+  const html = data.map(p => `
+    <div class="product">
+      <div class="pic">💻</div>
+      <div class="info">
+        <h4>${p.name}</h4>
+        <small>${p.specs || ''}</small>
+        <div class="price">KSh ${Number(p.price).toLocaleString()}</div>
+        <button class="add">Add to Cart</button>
+      </div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.products').forEach(box => {
+    box.innerHTML = html;
+  });
+}
+
+loadProducts();
 <script>
 const products=[
  {name:"HP / Dell / Core 2 Duo Desktop",price:5000,icon:"🖥️",spec:"2GB RAM • 160GB HDD",stock:"Available"},
