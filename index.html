@@ -125,34 +125,7 @@ const supabase = window.supabase.createClient(
 
 loadProducts();
 <script>
-const products=[
- {name:"HP / Dell / Core 2 Duo Desktop",price:5000,icon:"🖥️",spec:"2GB RAM • 160GB HDD",stock:"Available"},
- {name:"HP Core i5 2nd Gen Desktop",price:10000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"20 pieces"},
- {name:"Dell Core i5 2nd Gen Desktop",price:10000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"10 pieces"},
- {name:"Acer Core i5 4th Gen Desktop",price:13000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"1 piece"},
- {name:"Lenovo Core i5 4th Gen Desktop",price:12000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"1 piece"},
- {name:"Dell OptiPlex Core i5 4th Gen",price:13000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"20 pieces"},
- {name:"HP EliteDesk Core i5 4th Gen",price:12000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"2 pieces"},
- {name:"Lenovo Core i3 6th Gen Desktop",price:12000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"OUT OF STOCK"},
- {name:"Lenovo Core i5 6th Gen Desktop",price:14000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"OUT OF STOCK"},
- {name:"HP EliteDesk Core i5 6th Gen",price:16000,icon:"🖥️",spec:"8GB RAM • 500GB HDD",stock:"OUT OF STOCK"},
- {name:"HP 280 G2 Core i3 6th Gen",price:12000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"4 pieces"},
- {name:"Dell Vostro Core i3 8th Gen",price:15000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"2 pieces"},
- {name:"HP Z400 Workstation",price:18000,icon:"🖥️",spec:"4GB RAM • 500GB HDD • 1GB Graphics",stock:"2 pieces"},
- {name:"Byte Speed (Asus) Core i3 4th Gen",price:11000,icon:"🖥️",spec:"4GB RAM • 500GB HDD",stock:"2 pieces"},
-
- {name:"Acer 17-inch Monitor",price:3500,icon:"📺",spec:"17-inch display",stock:"10 pieces"},
- {name:"HP 17-inch Monitor",price:3500,icon:"📺",spec:"17-inch display",stock:"3 pieces"},
- {name:"Dell 19-inch Monitor",price:3500,icon:"📺",spec:"19-inch display",stock:"Available"},
- {name:"Asus 20-inch Monitor",price:3500,icon:"📺",spec:"20-inch display",stock:"Available"},
- {name:"ViewSonic 22-inch Monitor",price:5000,icon:"📺",spec:"22-inch • HDMI",stock:"10 pieces"},
- {name:"Lenovo 22-inch Monitor",price:5500,icon:"📺",spec:"22-inch • DisplayPort",stock:"Available"},
- {name:"Dell 22-inch Monitor",price:5500,icon:"📺",spec:"22-inch • DisplayPort",stock:"4 pieces"},
- {name:"HP 24-inch Monitor",price:6000,icon:"📺",spec:"24-inch • HDMI",stock:"30 pieces"},
- {name:"HP 24-inch Frameless Monitor",price:12000,icon:"📺",spec:"24-inch • Frameless",stock:"7 pieces"},
- {name:"ViewSonic 24-inch Monitor",price:6000,icon:"📺",spec:"24-inch display",stock:"3 pieces"},
- {name:"Acer 24-inch Monitor",price:6000,icon:"📺",spec:"24-inch display",stock:"2 pieces"}
-];
+let products = [];
 let cart=[];
 function money(n){return "KSh "+n.toLocaleString()}
 function card(p,i){return `<div class="product"><div class="pic">${p.icon}</div><div class="info"><h4>${p.name}</h4><small>${p.spec}</small><div class="price">${money(p.price)}</div><small style="display:block;margin-top:5px;color:${p.stock==="OUT OF STOCK"?"#d71920":"#16834a"};font-weight:bold">${p.stock}</small><button class="add" ${p.stock==="OUT OF STOCK"?"disabled style=\"opacity:.45;cursor:not-allowed\"":""} onclick="add(${i})">${p.stock==="OUT OF STOCK"?"Out of Stock":"Add to Cart"}</button></div></div>`}
@@ -182,7 +155,29 @@ function filterProducts(){
  document.getElementById("shopProducts").innerHTML=products.map((p,i)=>({p,i})).filter(x=>(x.p.name+" "+x.p.spec).toLowerCase().includes(q)).map(x=>card(x.p,x.i)).join("")||'<div class="empty">No products found.</div>';
  showPage("shop");
 }
-render();
+ async function loadProducts(){
+  const {data,error}=await db
+    .from('products')
+    .select('*')
+    .eq('active',true)
+    .order('created_at',{ascending:false});
+
+  if(error){
+    console.error('Products error:',error);
+    return;
+  }
+
+  products=data.map(p=>({
+    name:p.name,
+    price:p.price,
+    icon:p.category==="Monitors"?"📺":"🖥️",
+    spec:p.specs||"",
+    stock:p.stock>0?p.stock+" pieces":"OUT OF STOCK"
+  }));
+
+  render();
+ }
+loadProducts();
 </script>
 </body>
 </html>
